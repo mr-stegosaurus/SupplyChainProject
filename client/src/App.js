@@ -2,11 +2,10 @@ import React, { Component } from "react";
 import ItemManager from "./contracts/ItemManager.json";
 import Item from "./contracts/Item.json";
 import getWeb3 from "./getWeb3";
-
 import "./App.css";
 
 class App extends Component {
-  state = {const: 0, itemName: "exampleItem1", loaded:false};
+  state = {cost: 0, itemName: "exampleItem1", loaded:false};
 
   componentDidMount = async () => {
     try {
@@ -19,12 +18,12 @@ class App extends Component {
       // Get the contract instance.
       const networkId = await this.web3.eth.net.getId();
 
-      this.itemManager = new web3.eth.Contract(
+      this.itemManager = new this.web3.eth.Contract(
         ItemManager.abi,
         ItemManager.networks[networkId] && ItemManager.networks[networkId].address,
       );
 
-      this.item = new web3.eth.Contract(
+      this.item = new this.web3.eth.Contract(
         Item.abi,
         Item.networks[networkId] && Item.networks[networkId].address,
       );
@@ -57,12 +56,12 @@ class App extends Component {
     );
   }
 
-  handleSubmit = async () => {
+  handleSubmit = async() => {
     const { cost, itemName } = this.state;
     console.log(itemName, cost, this.itemManger);
-    let result = await this.itemManager.methods.crateItem(itemName, cost).send({ from: this.accounts[0] });
+    let result = await this.itemManager.methods.createItem(itemName, cost).send({ from: this.accounts[0] });
     console.log(result);
-    alert("Send "+cost+" Wei to "+result.events.SupplyChainStep.returnValues._address")
+    alert("Send "+cost+" Wei to "+result.events.SupplyChainStep.returnValues._itemAddress);
   };
 
   handleInputChange = (event) => {
